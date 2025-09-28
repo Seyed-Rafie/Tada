@@ -13,7 +13,8 @@
 
 <form action="" method="POST">
     {% csrf_token%}
-    add your new task<input type="text" name="task">
+    {{task_form}}
+<!--    add your new task<input type="text" name="task">-->
     <button type="submit">add</button>
 </form>
 

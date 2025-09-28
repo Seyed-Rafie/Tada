@@ -11,7 +11,7 @@ class User(models.Model):
 
 
 class Task(models.Model):
-    text = models.TextField()
+    text = models.CharField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 
     def __str__(self):

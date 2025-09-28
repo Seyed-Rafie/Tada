@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from main.forms import LoginForm
+from main.forms import LoginForm, TaskForm
 from main.models import User, Task
 
 # Create your views here.
@@ -47,7 +47,8 @@ def dashboard(request, user_id):
         task.save()
 # redirect('dashboard') ### change url
 # return render(request, 'dashboard.html', {'user': user})
-    return render(request, 'dashboard.html', {'user': user})
+    task_form = TaskForm()
+    return render(request, 'dashboard.html', {'user': user, 'task_form': task_form})
 
 def delete_task(request, task_id):
     task = Task.objects.get(id=task_id)
