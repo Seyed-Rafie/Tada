@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tada | an ordinary todo site</title>
+</head>
+<body bgcolor="#deb887">
+{{ message }}
+<br> <br>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <br>
+    <button type="submit">login</button>
+</form>
+</body>
+</html>

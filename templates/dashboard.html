@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tada | dashboard</title>
+</head>
+<body bgcolor="#deb887">
+{% for task in user.tasks.all %}
+    {{task}}
+<a href="{% url 'delete_task' task.id %}"> <button type="button">delete</button></a>
+<br>
+{%endfor%}
+
+<form action="" method="POST">
+    {% csrf_token%}
+    add your new task<input type="text" name="task">
+    <button type="submit">add</button>
+</form>
+
+</body>
+</html>
