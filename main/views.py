@@ -36,18 +36,17 @@ def login(request):
 
 def dashboard(request, user_id):
     user = User.objects.filter(id=user_id).first()
+    task_form = TaskForm()
     if user is None: ###
         return redirect('login')
 
     if request.method == "POST":
-        data = request.POST
-        task = Task()
-        task.user = user
-        task.text = data.get('task')
-        task.save()
-# redirect('dashboard') ### change url
-# return render(request, 'dashboard.html', {'user': user})
-    task_form = TaskForm()
+        task_form = TaskForm(request.POST)
+        if task_form.is_valid():
+            task = task_form.save(commit=False)
+            task.user = user
+            task.save()
+        return redirect('dashboard', user_id=user.id) ### change url
     return render(request, 'dashboard.html', {'user': user, 'task_form': task_form})
 
 def delete_task(request, task_id):
