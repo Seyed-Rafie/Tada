@@ -7,7 +7,6 @@ from main.models import User, Task
 
 # Create your views here.
 
-user = None ### security: 0 :)
 
 def login(request):
     form = LoginForm()
@@ -20,9 +19,8 @@ def login(request):
         # user = authenticate(request, username=username, password=password)
         for tuser in users:
             if tuser.username == username and tuser.password == password:
-                global user
                 user = tuser
-                return redirect('dashboard')
+                return redirect('dashboard', user_id=user.id)
                 # return dashboard(request, user)
 
         return render(request, 'login.html', {'form': form, "message": "your username or password is incorrect"}) ###
@@ -36,10 +34,11 @@ def login(request):
 #     # redirect('dashboard') ### change url
 #     # return render(request, 'dashboard.html', {'user': user})
 
-def dashboard(request):
-    global user
-    if user is None:
+def dashboard(request, user_id):
+    user = User.objects.filter(id=user_id).first()
+    if user is None: ###
         return redirect('login')
+
     if request.method == "POST":
         data = request.POST
         task = Task()
@@ -53,7 +52,7 @@ def dashboard(request):
 def delete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     task.delete()
-    return redirect('dashboard')
+    return redirect('dashboard', user_id=task.user.id)
 
 
 
