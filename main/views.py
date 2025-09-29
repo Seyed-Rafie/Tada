@@ -9,6 +9,8 @@ from main.models import User, Task, UserDevice
 
 # Create your views here.
 
+def home(request):
+    return redirect('login')
 
 def signup(request):
     if request.method == 'POST':
@@ -29,10 +31,10 @@ def login(request):
         user = User.objects.filter(username=username, password=password).first()
         if user:
             user_device = UserDevice.objects.filter(user=user, device=request.META.get('HTTP_USER_AGENT')).first()
-            if not user_device:
-                UserDevice.objects.create(user=user, device=request.META.get('HTTP_USER_AGENT'), last_login=timezone.now())
+            if user_device:
+                user_device.save()
             else:
-                user_device.last_login = timezone.now()
+                UserDevice.objects.create(user=user, device=request.META.get('HTTP_USER_AGENT'), last_login=timezone.now())
 
             return redirect('dashboard', user_id=user.id)
         return render(request, 'login.html', {'form': form, "message": "your username or password is incorrect"}) ###
