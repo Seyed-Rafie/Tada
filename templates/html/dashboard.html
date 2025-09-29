@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tada | dashboard</title>
-</head>
-<body bgcolor="#deb887">
+{% extends 'base.html' %}
+
+{% block content %}
 {% for task in user.tasks.all %}
     {{task}}
 <a href="{% url 'delete_task' task.id %}"> <button type="button">delete</button></a>
@@ -17,6 +13,4 @@
 <!--    add your new task<input type="text" name="task">-->
     <button type="submit">add</button>
 </form>
-
-</body>
-</html>
+{% endblock %}
