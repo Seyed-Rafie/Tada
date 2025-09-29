@@ -16,3 +16,10 @@ class Task(models.Model):
 
     def __str__(self):
         return self.text
+
+class UserDevice(models.Model):
+    device =models.CharField()
+    last_login = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='devices')
+
+

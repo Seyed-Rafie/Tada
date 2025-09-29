@@ -1,9 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from main.forms import LoginForm, TaskForm
-from main.models import User, Task
+from main.models import User, Task, UserDevice
 
 # Create your views here.
 
@@ -14,30 +16,33 @@ def login(request):
         data = request.POST
         username = data.get('username')
         password = data.get('password')
-        # users = User.objects.filter(username=username, password=password)
-        users = User.objects.all()
-        # user = authenticate(request, username=username, password=password)
-        for tuser in users:
-            if tuser.username == username and tuser.password == password:
-                user = tuser
-                return redirect('dashboard', user_id=user.id)
-                # return dashboard(request, user)
+        user = User.objects.filter(username=username, password=password).first()
+        if user:
+            user_device = UserDevice.objects.filter(user=user, device=request.META.get('HTTP_USER_AGENT')).first()
+            if not user_device:
+                UserDevice.objects.create(user=user, device=request.META.get('HTTP_USER_AGENT'), last_login=timezone.now())
+            else:
+                user_device.last_login = timezone.now()
 
+            return redirect('dashboard', user_id=user.id)
         return render(request, 'login.html', {'form': form, "message": "your username or password is incorrect"}) ###
+
     else:
         return render(request, 'login.html', {'form': form, "message": "enter your username or password"})
 
-# def dashboard(request, user):
-#     # if request.method == "POST":
-#     #     data = request.POST
-#     #     user.tasks.append(data.get('task'))
-#     # redirect('dashboard') ### change url
-#     # return render(request, 'dashboard.html', {'user': user})
 
 def dashboard(request, user_id):
+    # check for valid user_id
     user = User.objects.filter(id=user_id).first()
     task_form = TaskForm()
-    if user is None: ###
+    if not user:
+        return redirect('login')
+
+    # check for device and last login
+    user_device = UserDevice.objects.filter(user=user, device=request.META.get('HTTP_USER_AGENT')).first()
+    if not user_device:
+        return redirect('login')
+    if  timezone.now() - user_device.last_login > timezone.timedelta(hours=1):
         return redirect('login')
 
     if request.method == "POST":
