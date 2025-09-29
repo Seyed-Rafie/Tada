@@ -4,11 +4,21 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from main.forms import LoginForm, TaskForm
+from main.forms import SignupForm, LoginForm, TaskForm
 from main.models import User, Task, UserDevice
 
 # Create your views here.
 
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('login')
+
+    signup_form = SignupForm()
+    return render(request, 'signup.html', {'form': signup_form})
 
 def login(request):
     form = LoginForm()
