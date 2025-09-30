@@ -71,6 +71,17 @@ def delete_task(request, task_id):
     task.delete()
     return redirect('dashboard', user_id=task.user.id)
 
+def edit_task(request, task_id):
+    if request.method == "POST":
+        task = Task.objects.get(id=task_id)
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+        return redirect(dashboard, user_id=task.user.id)
+    task = Task.objects.get(id=task_id)
+    task_form = TaskForm(instance=task)
+    return render(request, 'edit_task.html', {'form': task_form})
+
 
 
 

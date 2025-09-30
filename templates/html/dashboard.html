@@ -3,6 +3,7 @@
 {% block content %}
 {% for task in user.tasks.all %}
     {{task}}
+<a href="{% url 'edit_task' task.id %}"> <button type="button">edit</button></a>
 <a href="{% url 'delete_task' task.id %}"> <button type="button">delete</button></a>
 <br>
 {%endfor%}
