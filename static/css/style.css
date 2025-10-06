@@ -3,6 +3,7 @@
 body {
     background-color: #deb887 !important; /* حذف bgcolor از HTML */
     font-family: Arial, sans-serif;
+    font-weight: bolder;
     margin: 0;
     padding: 0;
 }
