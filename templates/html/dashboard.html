@@ -2,16 +2,18 @@
 
 {% block content %}
 {% for task in user.tasks.all %}
+<div class="todo-item">
     {{task}}
-<a href="{% url 'edit_task' task.id %}"> <button type="button">edit</button></a>
-<a href="{% url 'delete_task' task.id %}"> <button type="button">delete</button></a>
-<br>
+</div>
+<a href="{% url 'edit_task' task.id %}"> <button type="button" class="btn btn-warning">edit</button></a>
+<a href="{% url 'delete_task' task.id %}"> <button type="button" class="btn btn-danger">delete</button></a>
+<br> <br>
 {%endfor%}
 
 <form action="" method="POST">
     {% csrf_token%}
     {{task_form}}
 <!--    add your new task<input type="text" name="task">-->
-    <button type="submit">add</button>
+    <button type="submit" class="btn btn-success">add</button>
 </form>
 {% endblock %}
