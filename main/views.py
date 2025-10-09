@@ -42,21 +42,28 @@ def login(request):
     else:
         return render(request, 'login.html', {'form': form, "message": "enter your username or password"})
 
-
-def dashboard(request, user_id):
+def check_login(request, user_id):
     # check for valid user_id
     user = User.objects.filter(id=user_id).first()
-    task_form = TaskForm()
     if not user:
-        return redirect('login')
+        return False
 
     # check for device and last login
     user_device = UserDevice.objects.filter(user=user, device=request.META.get('HTTP_USER_AGENT')).first()
     if not user_device:
-        return redirect('login')
-    if  timezone.now() - user_device.last_login > timezone.timedelta(hours=1):
-        return redirect('login')
+        return False
+    if timezone.now() - user_device.last_login > timezone.timedelta(hours=1):
+        return False
 
+    # Update last login time
+    user_device.last_login = timezone.now()
+    user_device.save()
+    return True
+
+def dashboard(request, user_id):
+    if not check_login(request, user_id):
+        return redirect('login')
+    user = User.objects.filter(id=user_id).first()
     if request.method == "POST":
         task_form = TaskForm(request.POST)
         if task_form.is_valid():
@@ -64,14 +71,25 @@ def dashboard(request, user_id):
             task.user = user
             task.save()
         return redirect('dashboard', user_id=user.id) ### change url
+    task_form = TaskForm()
     return render(request, 'dashboard.html', {'user': user, 'task_form': task_form})
 
-def delete_task(request, task_id):
+def delete_task(request, task_id, user_id):
+    if not check_login(request, user_id):
+        return redirect('login')
+    user = User.objects.filter(id=user_id).first()
+    if not user.tasks.filter(id=task_id).exists():
+        return redirect('dashboard', user_id=user.id)
     task = Task.objects.get(id=task_id)
     task.delete()
     return redirect('dashboard', user_id=task.user.id)
 
-def edit_task(request, task_id):
+def edit_task(request, task_id, user_id):
+    if not check_login(request, user_id):
+        return redirect('login')
+    user = User.objects.filter(id=user_id).first()
+    if not user.tasks.filter(id=task_id).exists():
+        return redirect('dashboard', user_id=user.id)
     if request.method == "POST":
         task = Task.objects.get(id=task_id)
         form = TaskForm(request.POST, instance=task)

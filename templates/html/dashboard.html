@@ -5,8 +5,8 @@
 <div class="todo-item">
     {{task}}
 </div>
-<a href="{% url 'edit_task' task.id %}"> <button type="button" class="btn btn-warning">edit</button></a>
-<a href="{% url 'delete_task' task.id %}"> <button type="button" class="btn btn-danger">delete</button></a>
+<a href="{% url 'edit_task' user.id task.id %}"> <button type="button" class="btn btn-warning">edit</button></a>
+<a href="{% url 'delete_task' user.id task.id %}"> <button type="button" class="btn btn-danger">delete</button></a>
 <br> <br>
 {%endfor%}
 
