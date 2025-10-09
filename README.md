@@ -44,14 +44,36 @@ Before running this project, make sure you have the following installed:
 ## 🏃‍♂️ Quick Start
 
 ### Using Docker (Recommended)
-
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/Seyed-Rafie/Tada
+   git clone <your-repository-url>
    cd todo-project
-   docker-compose build
-   docker-compose up -d
    ```
-
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   **Edit .env with your configuration:**
+   ```env
+   DEBUG=True
+   SECRET_KEY=your-secret-key-here
+   DB_NAME=todo_db
+   DB_USER=postgres
+   DB_PASSWORD=password
+   DB_HOST=db
+   DB_PORT=5432
+   ```
+3. **Build and run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
+4. **Run database migrations**
+   ```bash
+   docker-compose exec web python manage.py migrate
+   ```
+5. Access the application <br>
+   Open your browser and navigate to: http://localhost:8000
+   
 ## 👨‍💻 Author
 
 ### Mohammadrafie Fatahinia
